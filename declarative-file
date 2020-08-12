@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment{
-        PATH=${PATH}:$HOME/bin:$JAVA_HOME:$M2_HOME:$M2
+        M2_HOME:/opt/maven/maven
     }
 
     stages {
