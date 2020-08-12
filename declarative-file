@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment{
+        PATH=$PATH:$HOME/bin:$JAVA_HOME:$M2_HOME:$M2
+    }
 
     stages {
         stage("Git Checkout") {
@@ -7,5 +10,16 @@ pipeline {
                 git credentialsId: '056d4fa4-0c16-4879-affb-8a87f83f3969', url: 'https://github.com/gaellesimo/code2.git'
             }
         }
+        stage("Build") {
+            steps {
+                sh "mvn clean package"
+            }
+        }
+        stage("Docker Deployment") {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'root@3.236.243.23', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'docker rmi file3:1.0; docker build -t file3:1.0 .; docker tag file3:1.0 gaellesimo/file3:1.0; docker push gaellesimo/file3:1.0', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: 'webapp/target', sourceFiles: '**/*war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+        
     }
 }
