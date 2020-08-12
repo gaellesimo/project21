@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+
+    stages {
+        stage("Git Checkout") {
+            steps {
+                git credentialsId: '056d4fa4-0c16-4879-affb-8a87f83f3969', url: 'https://github.com/gaellesimo/code2.git'
+            }
+        }
+    }
+}
